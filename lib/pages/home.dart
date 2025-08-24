@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:menu_app/components/gridview_cards.dart';
 import 'package:menu_app/custom_theme.dart';
 import 'package:menu_app/models/mealsmodel.dart';
 import 'package:menu_app/service/basedb.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,15 +13,30 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  MealModel fMeal = Store.meals[2];
+  List<MealModel> filteredList = [];
+  bool isSearching = false;
+  final FocusNode _searchFocus = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
+
   final uniqueCategories = Store.meals
       .map((meal) => meal.strCategory)
       .toSet() // removes duplicates
       .toList();
+
   @override
   void initState() {
     super.initState();
     uniqueCategories.insert(0, 'All');
+    filteredList = Store.meals;
+    _searchFocus.addListener(() {
+      if (!_searchFocus.hasFocus) {
+        // TextField lost focus
+        setState(() {
+          isSearching = false;
+          filteredList = Store.meals;
+        });
+      }
+    });
   }
 
   @override
@@ -36,41 +51,92 @@ class _HomeState extends State<Home> {
         centerTitle: false,
         title: Row(
           children: [
-            Text('Aurora Info', style: Theme.of(context).textTheme.bodyLarge),
-            Spacer(),
-            IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.shopping_bag_outlined, color: Colors.white),
-                ),
-                // Badge
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  left: 25,
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: DarkColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints: BoxConstraints(minWidth: 18, minHeight: 18),
-                    child: Text(
-                      '3', // dynamic cart item count
-                      style: GoogleFonts.openSans(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+            if (!isSearching) ...[
+              Text('Aurora Info', style: Theme.of(context).textTheme.bodyLarge),
+              Spacer(),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    isSearching = true;
+                  });
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    FocusScope.of(context).requestFocus(_searchFocus);
+                  });
+                },
+                icon: Icon(Icons.search),
+              ),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Colors.white,
                     ),
                   ),
+                  // Badge
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    left: 25,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: DarkColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: BoxConstraints(minWidth: 18, minHeight: 18),
+                      child: Text(
+                        '3', // dynamic cart item count
+                        style: GoogleFonts.openSans(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ] else ...[
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  focusNode: _searchFocus,
+                  decoration: InputDecoration(
+                    hint: Text(
+                      'Find Your Desired Meal',
+                      style: GoogleFonts.openSans(fontSize: 12),
+                    ),
+                    border: InputBorder.none,
+                  ),
+                  style: GoogleFonts.openSans(color: Colors.white),
+                  onChanged: (value) {
+                    setState(() {
+                      filteredList = Store.meals
+                          .where(
+                            (m) => m.strMeal.toLowerCase().contains(
+                              value.toLowerCase(),
+                            ),
+                          )
+                          .toList();
+                    });
+                  },
                 ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  _searchFocus.unfocus(); // manually remove focus
+                  setState(() {
+                    isSearching = false;
+                    filteredList = Store.meals;
+                  });
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -144,7 +210,18 @@ class _HomeState extends State<Home> {
                             return Container(
                               margin: EdgeInsets.symmetric(horizontal: 5),
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  final String cat = uniqueCategories[index]!;
+                                  setState(() {
+                                    filteredList = Store.meals
+                                        .where(
+                                          (m) => cat != 'All'
+                                              ? m.strCategory == cat
+                                              : true,
+                                        )
+                                        .toList();
+                                  });
+                                },
                                 style: ButtonStyle(
                                   backgroundColor: WidgetStateProperty.all(
                                     DarkColors.secondaryBackGround,
@@ -174,7 +251,7 @@ class _HomeState extends State<Home> {
                           padding: const EdgeInsets.all(8.0),
                           child: GridView.builder(
                             padding: const EdgeInsets.all(2),
-                            itemCount: Store.meals.length,
+                            itemCount: filteredList.length,
                             gridDelegate:
                                 const SliverGridDelegateWithMaxCrossAxisExtent(
                                   maxCrossAxisExtent: 180,
@@ -183,95 +260,9 @@ class _HomeState extends State<Home> {
                                   childAspectRatio: 0.8,
                                 ),
                             itemBuilder: (context, index) {
-                              return TextButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                  backgroundColor: WidgetStateProperty.all(
-                                    DarkColors.secondaryBackGround,
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  padding: WidgetStateProperty.all(
-                                    EdgeInsets.all(0),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 100,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                        child: Image.network(
-                                          Store.meals[index].strMealThumb!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsGeometry.fromLTRB(
-                                        10,
-                                        5,
-                                        10,
-                                        0,
-                                      ),
-                                      child: Expanded(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              Store.meals[index].strMeal,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style:
-                                                  GoogleFonts.robotoCondensed(
-                                                    color: Colors.white,
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            Text(
-                                              textAlign: TextAlign.center,
-                                              Store
-                                                  .meals[index]
-                                                  .strInstructions!,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style:
-                                                  GoogleFonts.robotoCondensed(
-                                                    color: Colors.grey,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            SizedBox(height: 20),
-
-                                            RatingBarIndicator(
-                                              rating: Store
-                                                  .meals[index]
-                                                  .rating!, // your random or stored rating
-                                              itemBuilder: (context, index) =>
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                              itemCount: 5,
-                                              itemSize: 20.0,
-                                              direction: Axis.horizontal,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              return GridviewCards(
+                                index: index,
+                                list: filteredList,
                               );
                             },
                           ),
