@@ -15,6 +15,7 @@ class Store {
     meals.addAll(results.expand((list) => list).toList());
     for (final r in meals) {
       r.rating = 1 + Random().nextDouble() * 4;
+      r.price = (1 + Random().nextInt(20)).toString();
     }
   }
 

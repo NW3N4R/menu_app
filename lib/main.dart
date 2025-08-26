@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:menu_app/custom_theme.dart';
+import 'package:menu_app/pages/basketview.dart';
 import 'package:menu_app/pages/home.dart';
 import 'package:menu_app/pages/loading.dart';
 import 'package:menu_app/pages/mealscreen.dart';
@@ -38,7 +39,10 @@ class _MainAppState extends State<MainApp> {
       darkTheme: getDarkTheme(),
       themeMode: ThemeMode.dark,
       home: !isLoaded ? Loading() : Home(),
-      routes: {'/mealScreen': (context) => MealScreen()},
+      routes: {
+        '/mealScreen': (context) => MealScreen(),
+        '/basket': (context) => Basketview(),
+      },
     );
   }
 }

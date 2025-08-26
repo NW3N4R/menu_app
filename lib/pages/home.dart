@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:menu_app/components/gridview_cards.dart';
 import 'package:menu_app/custom_theme.dart';
+import 'package:menu_app/models/currentbasket_model.dart';
 import 'package:menu_app/models/mealsmodel.dart';
 import 'package:menu_app/service/basedb.dart';
 
@@ -12,12 +13,13 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+ValueNotifier<int> basketCount = ValueNotifier(currentItems.length);
+
 class _HomeState extends State<Home> {
   List<MealModel> filteredList = [];
   bool isSearching = false;
   final FocusNode _searchFocus = FocusNode();
   final TextEditingController _searchController = TextEditingController();
-
   final uniqueCategories = Store.meals
       .map((meal) => meal.strCategory)
       .toSet() // removes duplicates
@@ -37,6 +39,7 @@ class _HomeState extends State<Home> {
         });
       }
     });
+    currentItems.add(CurrentBasketModel(itemNo: 2, meal: Store.meals[1]));
   }
 
   @override
@@ -69,7 +72,17 @@ class _HomeState extends State<Home> {
                 clipBehavior: Clip.none,
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/basket');
+                      // if (basketCount.value >= 1) {
+                      // } else {
+                      //   CustomBanner.showBanner(
+                      //     context: context,
+                      //     message: 'You Dont have Anything in the Basket',
+                      //     severity: Severity.info,
+                      //   );
+                      // }
+                    },
                     icon: Icon(
                       Icons.shopping_bag_outlined,
                       color: Colors.white,
@@ -87,14 +100,19 @@ class _HomeState extends State<Home> {
                         shape: BoxShape.circle,
                       ),
                       constraints: BoxConstraints(minWidth: 18, minHeight: 18),
-                      child: Text(
-                        '3', // dynamic cart item count
-                        style: GoogleFonts.openSans(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: basketCount,
+                        builder: (context, value, _) {
+                          return Text(
+                            value.toString(),
+                            style: GoogleFonts.openSans(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        },
                       ),
                     ),
                   ),

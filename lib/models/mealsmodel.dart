@@ -26,6 +26,7 @@ class MealModel {
   final String? strImageSource;
   final String? strCreativeCommonsConfirmed;
   final String? dateModified;
+  String? price;
   double? rating = 1;
   MealModel({
     required this.idMeal,
@@ -44,6 +45,7 @@ class MealModel {
     this.strCreativeCommonsConfirmed,
     this.dateModified,
     this.rating,
+    this.price,
   });
 
   factory MealModel.fromJson(Map<String, dynamic> json) {

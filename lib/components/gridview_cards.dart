@@ -17,12 +17,17 @@ class _GridviewCardsState extends State<GridviewCards> {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        Navigator.pushNamed(
+      onPressed: () async {
+        final addedItem = await Navigator.pushNamed(
           context,
           '/mealScreen',
           arguments: widget.list[widget.index],
         );
+
+        if (addedItem != null) {
+          setState(() {}); // rebuild GridviewCards if needed
+          // Optional: notify parent to rebuild
+        }
       },
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(
@@ -94,5 +99,3 @@ class _GridviewCardsState extends State<GridviewCards> {
     );
   }
 }
-
-
