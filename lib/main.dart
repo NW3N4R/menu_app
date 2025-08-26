@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:menu_app/custom_theme.dart';
 import 'package:menu_app/pages/home.dart';
 import 'package:menu_app/pages/loading.dart';
+import 'package:menu_app/pages/mealscreen.dart';
 import 'package:menu_app/service/basedb.dart';
 
 void main() {
@@ -37,6 +38,7 @@ class _MainAppState extends State<MainApp> {
       darkTheme: getDarkTheme(),
       themeMode: ThemeMode.dark,
       home: !isLoaded ? Loading() : Home(),
+      routes: {'/mealScreen': (context) => MealScreen()},
     );
   }
 }

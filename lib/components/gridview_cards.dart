@@ -17,7 +17,13 @@ class _GridviewCardsState extends State<GridviewCards> {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(
+          context,
+          '/mealScreen',
+          arguments: widget.list[widget.index],
+        );
+      },
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(
           DarkColors.secondaryBackGround,
@@ -70,7 +76,6 @@ class _GridviewCardsState extends State<GridviewCards> {
                   ),
                 ),
                 SizedBox(height: 20),
-
                 RatingBarIndicator(
                   rating: Store
                       .meals[widget.index]
@@ -89,3 +94,5 @@ class _GridviewCardsState extends State<GridviewCards> {
     );
   }
 }
+
+
