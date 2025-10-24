@@ -69,37 +69,29 @@ class _MealScreenState extends State<MealScreen> {
           SizedBox(
             width: double.infinity,
             height: MediaQuery.of(context).size.height / 2,
-            child: Stack(
-              children: [
-                ShaderMask(
-                  shaderCallback: (rect) {
-                    return LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        DarkColors.primaryBackground,
-                        Colors.transparent,
-                      ],
-                      stops: [0.4, 1.0],
-                    ).createShader(rect);
-                  },
-                  blendMode: BlendMode.dstIn,
-                  child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withAlpha(170),
-                      BlendMode.darken,
-                    ),
-                    child: Image.network(meal.strMealThumb!, fit: BoxFit.cover),
-                  ),
+            child: ShaderMask(
+              shaderCallback: (rect) {
+                return LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkColors.primaryBackground, Colors.transparent],
+                  stops: [0.4, 1.0],
+                ).createShader(rect);
+              },
+              blendMode: BlendMode.dstIn,
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withAlpha(170),
+                  BlendMode.darken,
                 ),
-              ],
+                child: Image.network(meal.strMealThumb!, fit: BoxFit.cover),
+              ),
             ),
           ),
           SafeArea(
             child: Column(
               children: [
                 SizedBox(height: 40),
-
                 Expanded(
                   flex: 20,
                   child: Column(
@@ -129,7 +121,7 @@ class _MealScreenState extends State<MealScreen> {
                   ),
                 ),
                 Expanded(
-                  flex: 50,
+                  flex: 40,
                   child: Column(
                     children: [
                       Text(
@@ -253,18 +245,12 @@ class _MealScreenState extends State<MealScreen> {
                                   currentItems.add(model);
                                   basketCount.value = currentItems.length;
                                 },
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 12,
-                                    horizontal: 20,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Add To Basket',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 19,
-                                      ),
+                                child: Center(
+                                  child: Text(
+                                    'Add To Basket',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
                                     ),
                                   ),
                                 ),

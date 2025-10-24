@@ -80,7 +80,7 @@ class _GridviewCardsState extends State<GridviewCards> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 RatingBarIndicator(
                   rating: Store
                       .meals[widget.index]
