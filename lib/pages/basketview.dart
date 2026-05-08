@@ -31,7 +31,7 @@ class _BasketviewState extends State<Basketview> {
                       currentItems.removeAt(index);
                       basketCount.value = currentItems.length;
                       setState(() {
-                        // isEmpty = currentItems.isEmpty;
+                      
                       });
                     },
                     background: Container(

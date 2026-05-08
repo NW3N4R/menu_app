@@ -6,6 +6,13 @@ import 'package:menu_app/pages/loading.dart';
 import 'package:menu_app/pages/mealscreen.dart';
 import 'package:menu_app/service/basedb.dart';
 
+
+// Nwnar Ismael Abbas
+// Kalar Technical Institute
+// Information Technology (Morning Study) Stage 2
+// Projct Repository on Github 
+// https://github.com/NW3N4R/menu_app
+// this application needs internet to work properly
 void main() {
   runApp(const MainApp());
 }

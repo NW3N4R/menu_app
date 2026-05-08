@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
   final uniqueCategories = Store.meals
       .map((meal) => meal.strCategory)
-      .toSet() // removes duplicates
+      .toSet() 
       .toList();
 
   @override
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
     filteredList = Store.meals;
     _searchFocus.addListener(() {
       if (!_searchFocus.hasFocus) {
-        // TextField lost focus
+       
         setState(() {
           isSearching = false;
           filteredList = Store.meals;
@@ -74,21 +74,14 @@ class _HomeState extends State<Home> {
                   IconButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/basket');
-                      // if (basketCount.value >= 1) {
-                      // } else {
-                      //   CustomBanner.showBanner(
-                      //     context: context,
-                      //     message: 'You Dont have Anything in the Basket',
-                      //     severity: Severity.info,
-                      //   );
-                      // }
+                 
                     },
                     icon: Icon(
                       Icons.shopping_bag_outlined,
                       color: Colors.white,
                     ),
                   ),
-                  // Badge
+                 
                   Positioned(
                     right: 0,
                     bottom: 0,
@@ -147,7 +140,7 @@ class _HomeState extends State<Home> {
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  _searchFocus.unfocus(); // manually remove focus
+                  _searchFocus.unfocus(); 
                   setState(() {
                     isSearching = false;
                     filteredList = Store.meals;
@@ -175,7 +168,7 @@ class _HomeState extends State<Home> {
               blendMode: BlendMode.dstIn,
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withAlpha(170), // darkens image
+                  Colors.black.withAlpha(170), 
                   BlendMode.darken,
                 ),
                 child: Image.asset(
@@ -195,19 +188,19 @@ class _HomeState extends State<Home> {
                     text: TextSpan(
                       style: Theme.of(
                         context,
-                      ).textTheme.titleLarge, // base style
+                      ).textTheme.titleLarge,
                       children: [
                         TextSpan(
                           text: 'Aurora ',
                           style: const TextStyle(
                             color: DarkColors.primary,
-                          ), // first word color
+                          ),
                         ),
                         TextSpan(
                           text: 'Restaurant',
                           style: const TextStyle(
                             color: Colors.white,
-                          ), // second word color
+                          ), 
                         ),
                       ],
                     ),
